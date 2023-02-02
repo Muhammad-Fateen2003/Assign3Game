@@ -52,6 +52,17 @@ public class Client {
   }
 
   public static void main(String[] args) throws IOException {
+    socketMain();
+        		// create the frame
+
+		try {
+			ClientGui main = new ClientGui();
+			main.show(true);
+
+		} catch (Exception e) {e.printStackTrace();}
+  }
+
+  public static void socketMain() throws IOException {
     Socket sock;
     try {
       sock = new Socket("localhost", 9000);
@@ -84,8 +95,9 @@ public class Client {
           sock.close();
           out.close();
           in.close();
-          System.exit(0);
-          break;
+          // System.exit(0);
+          return;
+          // break;
         default:
           System.out.println("Please select a valid option (1-5).");
           break;
