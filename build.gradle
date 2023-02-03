@@ -14,42 +14,74 @@ implementation group: 'org.json', name: 'json', version: '20200518'
 //define main class
 mainClassName = 'Concentration'
 
-task TCPServer(type: JavaExec) {
+task runServerTCP(type: JavaExec) {
   group 'tcp'
-  description 'Displays a GUI for a game of concentration'
+  description 'Runs the TCP Game Server'
 
   classpath = sourceSets.main.runtimeClasspath
 
-  main = 'fauxSolution.tcp.Server'
+  main = 'fateenSolution.tcp.ServerTCP'
   standardInput = System.in
+
+  if (project.hasProperty("port")) {
+    args(project.getProperty('port'));
+  }else {
+    args(8000);
+  }
 }
 
-task TCPClient(type: JavaExec) {
+task runClientTCP(type: JavaExec) {
   group 'tcp'
-  description 'Takes an image and makes the rebus library'
+  description 'Runs the TCP Client GUI'
 
   classpath = sourceSets.main.runtimeClasspath
 
-  main = 'fauxSolution.tcp.Client'
+  main = 'fateenSolution.tcp.ClientGui'
   standardInput = System.in
+
+  if (project.hasProperty("port") && project.hasProperty("host")) {
+    args(project.getProperty('port'), project.getProperty('host'));
+  } else if (project.hasProperty("port")){
+    args(project.getProperty('port'), "localhost");
+  } else if (project.hasProperty("host")){
+    args(8000, project.getProperty('host'));
+  }else {
+    args(8000, "localhost");
+  }
 }
 
-task UDPServer(type: JavaExec) {
+task runServerUDP(type: JavaExec) {
   group 'udp'
-  description 'Displays a GUI for a game of concentration'
+  description 'Runs the UDP Game Server'
 
   classpath = sourceSets.main.runtimeClasspath
 
-  main = 'fauxSolution.udp.Server'
+  main = 'fateenSolution.udp.ServerUDP'
   standardInput = System.in
+
+  if (project.hasProperty("port")) {
+    args(project.getProperty('port'));
+  }else {
+    args(8000);
+  }
 }
 
-task UDPClient(type: JavaExec) {
+task runClientUDP(type: JavaExec) {
   group 'udp'
-  description 'Takes an image and makes the rebus library'
+  description 'Runs the UDP Client GUI'
 
   classpath = sourceSets.main.runtimeClasspath
 
-  main = 'fauxSolution.udp.Client'
+  main = 'fateenSolution.udp.ClientUDP'
   standardInput = System.in
+
+  if (project.hasProperty("port") && project.hasProperty("host")) {
+    args(project.getProperty('port'), project.getProperty('host'));
+  } else if (project.hasProperty("port")){
+    args(project.getProperty('port'), "localhost");
+  } else if (project.hasProperty("host")){
+    args(8000, project.getProperty('host'));
+  }else {
+    args(8000, "localhost");
+  }
 }

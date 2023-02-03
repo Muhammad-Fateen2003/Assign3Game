@@ -7,11 +7,7 @@ Created by David Clements so all kudos go to him! A [video](https://youtu.be/QNG
 
 In the example we are actually converting all the data to a byte[] and not just sending over the String and letting Java do the rest
 
-The Client connects to server and opens up a Gui. Client can send num 1-5 over to client
-1 - server will send a joke
-2 - server will send a quote
-3 - server will send an image
-4 - server will send either of the above
+The Client connects to server and opens up a Gui. The Server sents a message asking for the Client's name to the Client. The Client can choose a name. The name is sent to the server and the server sents a message to the Client that greets them using the name that was sent and asks the Client to guess a city (ci) or a country (co) or see the leaderboard (leader). 
 
 For more details see code and/or video
 
@@ -85,12 +81,12 @@ anymore, is up to you. DO NOT use threads, yes I know I am mean.
 
 ## Running the example
 
-`gradle TCPServer`
+`gradle runServerTCP -Pport=port`
 
-`gradle TCPClient`
+` gradle runClientTCP -Pport=port -Phost=hostIP`
 
 ## UML
-![Assigment 3 UML](https://github.com/Muhammad-Fateen2003/Assign3Game/blob/main/Sequence%20Diagram1.png)
+![Assigment 3 UML](https://raw.githubusercontent.com/Muhammad-Fateen2003/Assign3Game/main/Sequence%20Diagram1.png)
 
 ### Simple protocol
 
@@ -138,7 +134,7 @@ It is suggested that you play with this and try to include some of the below for
 
 # UDP
 
-The main differences can be seen in NetworkUtils.java. In there the sending and reading of messages happen. For UDP the max buffer length is assumed to be 1024 bytes. So if the package is bigger it is split up into multiple packages. Ever package holds the information about the following data
+The main differences can be seen in NetworkUtils.java. In there the sending and reading of messages happen. For UDP the max buffer length is assumed to be 1024 bytes. So if the package is bigger it is split up into multiple packages. Every package holds the information about the following data
      *   totalPackets(4-byte int),  -- number of total packages
      *   currentPacket#(4-byte int),  -- number of current package
      *   payloadLength(4-byte int), -- length of the payload for this package
