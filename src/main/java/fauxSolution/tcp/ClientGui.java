@@ -56,7 +56,8 @@ public class ClientGui implements OutputPanel.EventHandlers {
 	OutputStream out;
 	ObjectOutputStream os;
 	BufferedReader bufferedReader;
-	ServerProxy server = new ServerProxy();
+	GameServer game = new GameServer();  //TODO: remove this
+	ClientTCP gameClient = new ClientTCP();
 
 	/**
 	 * Construct dialog
@@ -157,9 +158,11 @@ public class ClientGui implements OutputPanel.EventHandlers {
 		String requestMessage = "{'type': 'processInput', 'value' : '"+input+"'}";
 		//String requestMessage = "{'type': 'downloadImage', 'value' : '"+sImage+"'}";
 
-		String reponseMessage = server.ProcessMessage(requestMessage);
-		JSONObject response = new JSONObject(reponseMessage);
+		JSONObject request = new JSONObject(requestMessage);
 
+		JSONObject response = game.ProcessMessage(request);
+		//JSONObject response = serverClient.ProcessMessage(request);
+		
 
 		String sImage = response.getString("image");
 		String sBlanks = response.getString("blanks");
@@ -168,7 +171,7 @@ public class ClientGui implements OutputPanel.EventHandlers {
 
 		outputPanel.setBlanks(sBlanks);
 		outputPanel.setPoints(sPoints);
-		if(!server.sOutputs.isEmpty()){
+		if(!game.sOutputs.isEmpty()){
 			outputPanel.appendOutput(sOutputs);
 		}
 
@@ -192,8 +195,6 @@ public class ClientGui implements OutputPanel.EventHandlers {
 			outputPanel.appendOutput("You found me!");
 		}
 	}
-
-
 
 
 	public static void main(String[] args) throws IOException {

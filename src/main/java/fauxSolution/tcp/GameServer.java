@@ -2,14 +2,13 @@ package fauxSolution.tcp;
 
 import org.json.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Random;
 
-class ServerProxy {
+class GameServer {
 	int points = 10;
 	String currentPrompt = "name";
 	String playerName;
@@ -23,9 +22,7 @@ class ServerProxy {
     int sPoints;
     String sOutputs;
 
-    public String ProcessMessage(String requestMessage){         
-
-		JSONObject request = new JSONObject(requestMessage);
+    public JSONObject ProcessMessage(JSONObject request){         
 		String type = request.getString("type");
 
         switch (type) {
@@ -40,7 +37,7 @@ class ServerProxy {
 
         String reponseMessage = "{'image': '"+sImage+"', 'blanks' : '"+sBlanks+"', 'points' : '"+sPoints+"', 'outputs' : '"+sOutputs+"'}";    
 
-        return reponseMessage;
+        return new JSONObject(reponseMessage);
     }
 
 	public void ProcessInput(String input){
