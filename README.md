@@ -89,8 +89,8 @@ anymore, is up to you. DO NOT use threads, yes I know I am mean.
 
 `gradle TCPClient`
 
-##UML
-![Assigment 3 UML]()
+## UML
+![Assigment 3 UML](https://github.com/Muhammad-Fateen2003/Assign3Game/blob/main/Sequence%20Diagram1.png)
 
 ### Simple protocol
 
