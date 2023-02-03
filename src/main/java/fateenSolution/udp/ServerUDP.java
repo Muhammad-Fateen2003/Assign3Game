@@ -22,7 +22,7 @@ public class ServerUDP
 		GameServer game = new GameServer();
 		DatagramSocket sock = null;
 		try {
-		  sock = new DatagramSocket(9000);
+		  sock = new DatagramSocket(port);
 		  System.out.println("Waiting for first connection...");
 		  // NOTE: SINGLE-THREADED, only one connection at a time
 		  while (true) {
