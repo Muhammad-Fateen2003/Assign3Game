@@ -1,5 +1,5 @@
-# Example Code for client asking for different data
-These examples show a TCP and the same code with UDP. 
+# Assignment 3 Client Sever Hangman Game
+This project show a TCP and the same code with UDP. 
 
 Created by David Clements so all kudos go to him! A [video](https://youtu.be/QNGj_EvOHlw "Hello my name is Muhammad") he made about this to help understanding hat is going on in the code. 
 
@@ -7,7 +7,7 @@ Created by David Clements so all kudos go to him! A [video](https://youtu.be/QNG
 
 In the example we are actually converting all the data to a byte[] and not just sending over the String and letting Java do the rest
 
-Client connects to server. Client can send num 1-5 over to client
+The Client connects to server and opens up a Gui. Client can send num 1-5 over to client
 1 - server will send a joke
 2 - server will send a quote
 3 - server will send an image
