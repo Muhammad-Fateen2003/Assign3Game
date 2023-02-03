@@ -1,15 +1,16 @@
 # Assignment 3 Client Sever Hangman Game
-This project show a TCP and the same code with UDP. 
-
-Created by David Clements so all kudos go to him! A [video](https://youtu.be/QNGj_EvOHlw "Hello my name is Muhammad") he made about this to help understanding hat is going on in the code. 
+This project shows a hangman game coded in TCP and the same code with UDP. 
 
 ## Description
 
 In the example we are actually converting all the data to a byte[] and not just sending over the String and letting Java do the rest
 
-The Client connects to server and opens up a Gui. The Server sents a message asking for the Client's name to the Client. The Client can choose a name. The name is sent to the server and the server sents a message to the Client that greets them using the name that was sent and asks the Client to guess a city (ci) or a country (co) or see the leaderboard (leader). 
+The Client connects to server and opens up a Gui. The Server sents a message asking for the Client's name to the Client. The Client can choose a name. The name is sent to the server and the server sents a message to the Client that greets them using the name that was sent and asks the Client to guess a city (ci) or a country (co) or see the leaderboard (leader). If the client types "leader", it will send it to the server and the server will sent back a json of the leaderboard that will be display on the output panel of the GUI. If the client chooses "ci" or "co" what they chose will be sent to the server and the server will choose a random image and word to guess based of the chosen image. The server will convert the word into blanks and send the image, blanks, point(set to 10 at the begining), and the appropriate output message to the client which will properly display everything it was sent. The Client can then guess a word or letter from the blank and sent it to the server which will process it and resend new blanks, and points. This will continue untill the client wins or loses. After that the client can choose whether to restart the game or not. If the choose to restart the came they will be asked their name like at the begining of the game, if they choose not to the game will end, the gui will close, and the program will end (This also happens when you type quit). 
 
-For more details see code and/or video
+For more details see code and/or the assignment video
+
+
+# TCP
 
 ## Requirements
 
@@ -77,8 +78,6 @@ message that a game is already in progress and they cannot connect. How exactly
 you handle this, whether you let the user wait or just do not let them do anything
 anymore, is up to you. DO NOT use threads, yes I know I am mean.
 
-# TCP
-
 ## Running the example
 
 `gradle runServerTCP -Pport=port`
@@ -90,21 +89,23 @@ anymore, is up to you. DO NOT use threads, yes I know I am mean.
 
 ### Simple protocol
 
-Client only sends what they want, could consider adding more information like a clientID or optional data. 
+Client sends the type of task that it wants the server to perform, as well as, the value of the input that was entered into the client via the input bar. 
 
 ```
 { 
-	"selected": <int: 1=joke, 2=quote, 3=image, 4=random>
+	"type": <int: 1=joke, 2=quote, 3=image, 4=random>
+   "value": <entered input>
 }
 ```
    
-Server sends the data type of "data" and if it is a joke, quote or image and also of course the data response: 
+Server sends the output data that should be displayed on the output panel of the GUI. It also sents the image data, the blanks (the progress the Client has on the word to guess) and finally the number of point the Client has: 
    
 ```
 {
-   "datatype": <int: 1-string, 2-byte array>, 
-   "type": <"joke", "quote", "image">,
-   "data": <thing to return> 
+   "outputs": <String that is outputed on the GUI output panel>, 
+   "image": <image data>,
+   "blanks": <progress on word to guess>,
+   "points": <number of points left> 
 }
 ```
    
@@ -115,8 +116,9 @@ Server sends error if something goes wrong
 	"error": <error string> 
 }
 ```
-   
-   
+
+## Explanation of Robustness   
+...   
 ## Issues in the code that were not included on purpose
 The code is basically to show you how you can use a TCP connection to send over different data and interpret it on either side. It focuses on this alone and not on error handling and some nicer features.
 It is suggested that you play with this and try to include some of the below for your own practice. 
@@ -134,6 +136,11 @@ It is suggested that you play with this and try to include some of the below for
 
 # UDP
 
+## UDP Requirements
+- [X] The asking and sending of the user's name.
+- [X] Sending an image fron the server to the Client
+
+## Differences between TCP and UDP
 The main differences can be seen in NetworkUtils.java. In there the sending and reading of messages happen. For UDP the max buffer length is assumed to be 1024 bytes. So if the package is bigger it is split up into multiple packages. Every package holds the information about the following data
      *   totalPackets(4-byte int),  -- number of total packages
      *   currentPacket#(4-byte int),  -- number of current package

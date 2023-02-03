@@ -72,7 +72,7 @@ task runClientUDP(type: JavaExec) {
 
   classpath = sourceSets.main.runtimeClasspath
 
-  main = 'fateenSolution.udp.ClientUDP'
+  main = 'fateenSolution.udp.ClientGui'
   standardInput = System.in
 
   if (project.hasProperty("port") && project.hasProperty("host")) {
