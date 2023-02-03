@@ -17,65 +17,65 @@ For more details see code and/or video
 
 ## Requirements
 
-- [ ] (3 points) When the user starts up it should connect to the server. The server will
+- [X] (3 points) When the user starts up it should connect to the server. The server will
 reply by asking for the name of the player.
-- [ ] (3 points) The user should send their name and the server should receive it and greet
+- [X] (3 points) The user should send their name and the server should receive it and greet
 the user by name.
-- [ ] (4 points) The user should be presented a choice between seeing a leader board or
+- [X] (4 points) The user should be presented a choice between seeing a leader board or
 being allowed to guess a city or country (make the interface easy so a user will know
 what to do).
-- [ ] (4 points) The leader board will show all players that have played since the first
+- [X] (4 points) The leader board will show all players that have played since the first
 start of the server with their name and points. The server will maintain the leader
 board and send it to the client when requested. You can assume that the same name
 is the same player.
-- [ ] (2 points) Add on: The leader board is persistent even when the server is restarted
+- [X] (2 points) Add on: The leader board is persistent even when the server is restarted
 (we did not cover this in class yet though) – so this is extra credit.
-- [ ] (6 points) If the user chooses city or county the server will send over an image and
+- [X] (6 points) If the user chooses city or county the server will send over an image and
 the blanks for the word we are searching for.
-- [ ] (5 points) The image should be chosen randomly from the folder, it is ok if you show
+- [X] (5 points) The image should be chosen randomly from the folder, it is ok if you show
 the same image a couple times, you do not have to keep track of which you already
 used – you need to print the intended answer in the server terminal to simplify
 grading for us (this will be worth some points)
-- [ ] (5 points) The user can then do one of three things; enter a letter guess (a one letter
+- [X] (5 points) The user can then do one of three things; enter a letter guess (a one letter
 response), enter a word (guessing the word), type "quit" to end the game.
-- [ ] (2 points) The user enters a guess (word or letter) and the server must check the
+- [X] (2 points) The user enters a guess (word or letter) and the server must check the
 guess and respond accordingly.
-- [ ] (2 points) If it is a letter and it is correct +1 point and the letter needs to be
+- [X] (2 points) If it is a letter and it is correct +1 point and the letter needs to be
 displayed in the UI at the correct place.
-- [ ] (2 points) If it is a letter and it is wrong -1 point and the points need to be updated
+- [X] (2 points) If it is a letter and it is wrong -1 point and the points need to be updated
 in the UI, the game continues if the user has still more than 0 points.
-- [ ] (2 points) If it is a word and it is correct +5 point and the user is informed and the
+- [X] (2 points) If it is a word and it is correct +5 point and the user is informed and the
 game ends.
-- [ ] (2 points) If it is a word and it is wrong -5 point and the user needs to be informed,
+- [X] (2 points) If it is a word and it is wrong -5 point and the user needs to be informed,
 the game continues if the user has still more than 0 points.
-- [ ] (3 points) If the user types "quit" the client disconnects gracefully even during the
+- [X] (3 points) If the user types "quit" the client disconnects gracefully even during the
 game.
-- [ ] (4 points) The current points the user has, have to be displayed in the UI. As soon
+- [X] (4 points) The current points the user has, have to be displayed in the UI. As soon
 as a user has 0 points, they lose. As long as they have more than 0 points they are
 still in the game.
-- [ ] (3 points) If the player won add their new points to their old points on the leader
+- [X] (3 points) If the player won add their new points to their old points on the leader
 board (or choose the highest value either is ok). You can assume that their name
 always identifies them.17. Evaluations of the input needs to happen on the server side; the client will not know
 the images, the corresponding answers, the points, or the leader board. The correct
 answers should not be sent to the client. No real points for this since if this is
 not done then you do not really use the client/server correctly. So this will lead to
 deductions above.
-- [ ] (4 points) Your protocol must be robust. If a command that is not understood
+- [X] (4 points) Your protocol must be robust. If a command that is not understood
 is sent to the server or an incorrect parameterization of the command, then the
 protocol should define how these are indicated. Your protocol must have headers
 and optionally payloads. This means in the context of one logical message the
 receiver of the message has to be able to read a header, understand the metadata
 it provides, and use it to assist with processing a payload (if one is even present).
 This protocol needs to be described in detail in the README.md.
-- [ ] (7 points) Your programs must be robust. If errors occur on either the client or server
+- [X] (7 points) Your programs must be robust. If errors occur on either the client or server
 or if there is a network problem, you have to consider how these should be handled
 in the most recoverable and informative way possible. Implement good general error
 handling and output. Your client/server should not crash even when invalid inputs
 are provided by the user.
-- [ ] (3 points) After the player wins/loses they they get back to the main menu (this
+- [X] (3 points) After the player wins/loses they they get back to the main menu (this
 is different than my video demenstartion so please do as this assignment says. The
 user can now quit, see the leader board or play another game.
-- [ ] (3 points) - advice: skip this until you have everything else then get back to this:
+- [X] (3 points) - advice: skip this until you have everything else then get back to this:
 If a game is in progress and a second user tries to connect, they should receive a
 message that a game is already in progress and they cannot connect. How exactly
 you handle this, whether you let the user wait or just do not let them do anything
