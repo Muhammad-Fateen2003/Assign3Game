@@ -93,7 +93,7 @@ Client sends the type of task that it wants the server to perform, as well as, t
 
 ```
 { 
-	"type": <int: 1=joke, 2=quote, 3=image, 4=random>
+   "type": <int: 1=joke, 2=quote, 3=image, 4=random>
    "value": <entered input>
 }
 ```
