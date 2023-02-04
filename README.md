@@ -57,7 +57,8 @@ as a user has 0 points, they lose. As long as they have more than 0 points they 
 still in the game.
 - [X] (3 points) If the player won add their new points to their old points on the leader
 board (or choose the highest value either is ok). You can assume that their name
-always identifies them.17. Evaluations of the input needs to happen on the server side; the client will not know
+always identifies them.
+- [X] Evaluations of the input needs to happen on the server side; the client will not know
 the images, the corresponding answers, the points, or the leader board. The correct
 answers should not be sent to the client. No real points for this since if this is
 not done then you do not really use the client/server correctly. So this will lead to
@@ -77,7 +78,7 @@ are provided by the user.
 - [X] (3 points) After the player wins/loses they they get back to the main menu (this
 is different than my video demenstartion so please do as this assignment says. The
 user can now quit, see the leader board or play another game.
-- [X] (3 points) - advice: skip this until you have everything else then get back to this:
+- [ ] (3 points) - advice: skip this until you have everything else then get back to this:
 If a game is in progress and a second user tries to connect, they should receive a
 message that a game is already in progress and they cannot connect. How exactly
 you handle this, whether you let the user wait or just do not let them do anything
@@ -91,6 +92,7 @@ anymore, is up to you. DO NOT use threads, yes I know I am mean.
 
 ## UML
 ![Assigment 3 UML](https://raw.githubusercontent.com/Muhammad-Fateen2003/Assign3Game/main/Sequence%20Diagram1.png)
+![Statemachine Diagram](https://user-images.githubusercontent.com/109046423/216750122-8b0c8ed8-b329-4977-ad4f-31b9ac96a7c5.png)
 
 ### Simple protocol
 
@@ -98,7 +100,7 @@ Client sends the type of task that it wants the server to perform, as well as, t
 
 ```
 { 
-   "type": <int: 1=joke, 2=quote, 3=image, 4=random>
+   "type": <String: processInput, getImage>
    "value": <entered input>
 }
 ```
@@ -107,18 +109,30 @@ Server sends the output data that should be displayed on the output panel of the
    
 ```
 {
+   "type": <String: response>,
+   "action": <String: newgame, name, type, city, country, leader, exit>,
    "outputs": <String that is outputed on the GUI output panel>, 
-   "image": <image data>,
+   "image": <image path full name>,
    "blanks": <progress on word to guess>,
-   "points": <number of points left> 
+   "points": <number of points left>
 }
 ```
-   
+
+Server sends image binary data encoded as Base64
+
+```
+{
+   "type": <String: image>,
+   "data": <Base64 image binary data> 
+}
+```
+
 Server sends error if something goes wrong
 
 ```
 {
-	"error": <error string> 
+   "type": <String: error>,
+   "error": <error string> 
 }
 ```
 
