@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class ServerTCP
 {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		int port = 8000;
 		if (args.length == 1) {
 			port = Integer.parseInt(args[0]);
@@ -20,7 +20,7 @@ public class ServerTCP
 		System.out.println("Shutting Down TCP Server...");
 	}
 
-	public static void StartServer(int port) throws IOException {
+	public static void StartServer(int port) {
 		GameServer game = new GameServer();
 		ServerSocket serv = null;
 		try {
@@ -31,6 +31,7 @@ public class ServerTCP
 			Socket sock = null;
 			try {
 			  sock = serv.accept(); // blocking wait
+			  System.out.println("Client connect");
 			  OutputStream out = sock.getOutputStream();
 			  InputStream in = sock.getInputStream();
 			  while (true) {
@@ -43,21 +44,31 @@ public class ServerTCP
 				// we are converting the JSON object we have to a byte[]
 				byte[] output = JsonUtils.toByteArray(returnMessage);
 				NetworkUtils.Send(out, output);
-				System.out.println("Returned: " + returnMessage.toString());
+				System.out.println("Returned: " + returnMessage.toString().length() + " bytes");
+
+				if (returnMessage.has("action") && returnMessage.getString("action").equals("exit"))
+				{
+					break; // exit while loop to close socket
+				}
 			  }
 			} catch (Exception e) {
 			  System.out.println("Client disconnect");
 			} finally {
 			  if (sock != null) {
 				sock.close();
+				System.out.println("Socket closed");
 			  }
 			}
 		  }
 		} catch (IOException e) {
-		  e.printStackTrace();
+			System.out.println(e.toString());
 		} finally {
 		  if (serv != null) {
-			serv.close();
+			try {
+				serv.close();
+			} catch (IOException e) {
+				System.out.println(e.toString());
+			}
 		  }
 		}
 	}

@@ -266,9 +266,13 @@ class GameServer {
 				// ignore repeat guesses
 			}
 			else if(wordToGuess.contains(input)){
+				int index = wordToGuess.indexOf(input);
 				points ++;
 				setPoints(points);
-				currentProgress.setCharAt(wordToGuess.indexOf(input) * 2, input.charAt(0));
+				while (index >= 0) {
+					currentProgress.setCharAt(index * 2, input.charAt(0));
+					index = wordToGuess.indexOf(input, index + 1);
+				}
 				setBlanks(currentProgress.toString());
 				
 			}

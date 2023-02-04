@@ -30,8 +30,8 @@ public class NetworkUtils {
     int bytesRead = 0;
     try {
       bytesRead = in.read(bytes, 0, length);
-    } catch (IOException e1) {
-      e1.printStackTrace();
+    } catch (IOException e) {
+      System.out.println(e.toString());
     }
     if (bytesRead < length && bytesRead > 0) {
       byte[] newBytes = Read(in, length-bytesRead);
