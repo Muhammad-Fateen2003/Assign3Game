@@ -33,8 +33,8 @@ public class ServerUDP
 
 				System.out.println("Recived: " + requestMessage.toString());
 				JSONObject returnMessage = game.ProcessMessage(requestMessage);
-				System.out.println("Returned: " + returnMessage.toString());
-							byte[] output = JsonUtils.toByteArray(returnMessage);
+				System.out.println("Returned: " + returnMessage.toString().length() + " bytes");
+				byte[] output = JsonUtils.toByteArray(returnMessage);
 				NetworkUtils.Send(sock, messageTuple.Address, messageTuple.Port, output);
 			  }
 			} catch (IOException e) {

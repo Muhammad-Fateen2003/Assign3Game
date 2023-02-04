@@ -1,16 +1,22 @@
 package fateenSolution.udp;
 
 import org.json.*;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 class GameServer {
 	int points = 10;
-	String currentPrompt = "name";
+	String currentPrompt = "newgame";
 	String playerName;
 	StringBuffer currentProgress;
 	String imageToGuess;
@@ -24,26 +30,78 @@ class GameServer {
 
     public JSONObject ProcessMessage(JSONObject request){         
 		String type = request.getString("type");
+		String input = request.getString("value");
+		JSONObject response = null;
 
         switch (type) {
             case "processInput":
-                String input = request.getString("value");
-                ProcessInput(input);                
+                ProcessInput(input);
+				String reponseMessage = "{'type': 'response', 'action': '"+currentPrompt+"', 'image': '"+sImage+"', 'blanks' : '"+sBlanks+"', 'points' : '"+sPoints+"', 'outputs' : '"+sOutputs+"'}";                    
+				response = new JSONObject(reponseMessage);
                 break;
-        
+			case "getImage":
+				response = GetImage(input);
+				break;
             default:
-                break;
+				System.out.println("Ignoring type: " + type);
+				break;
         }
 
-        String reponseMessage = "{'image': '"+sImage+"', 'blanks' : '"+sBlanks+"', 'points' : '"+sPoints+"', 'outputs' : '"+sOutputs+"'}";    
-
-        return new JSONObject(reponseMessage);
+        return response;
     }
+
+	private JSONObject GetImage(String input) {
+		JSONObject json = new JSONObject();
+		json.put("type", "image");
+	
+		File file = new File(input);
+		if (!file.exists()) {
+		  System.err.println("Cannot find file: " + file.getAbsolutePath());
+		}
+		// Read in image
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		byte[] bytes = null;
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+		  ImageIO.write(img, "png", out);
+		  bytes = out.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (bytes != null) {
+		  Base64.Encoder encoder = Base64.getEncoder();
+		  json.put("data", encoder.encodeToString(bytes));
+		  return json;
+		}
+		return error("Unable to save image to byte array");
+	}
 
 	public void ProcessInput(String input){
         sOutputs = "";
 
+		switch (input) {
+			case "quit":
+				currentPrompt = "exit";
+				break;
+			
+			case "newgame":
+				currentPrompt = "newgame";
+				break;
+		
+			default:
+				break;
+		}
+
 		switch (currentPrompt) {
+			case "newgame":
+				HandleNewGame();
+				break;
 			case "name":
 				HandleName(input);
 				break;
@@ -58,6 +116,9 @@ class GameServer {
 				break;
 			case "country":
 				HandleGuess(input);
+				break;
+			case "exit":
+				HandleExit();
 				break;
             default:
                 break;
@@ -174,6 +235,25 @@ class GameServer {
 		return true;
 	}
 
+	void HandleNewGame(){
+		try {
+			insertImage("img/hi.png", 0, 0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		appendOutput("Hello, please tell me your name.");	
+		points = 0;
+		setPoints(points);
+		currentProgress = new StringBuffer();
+		setBlanks(currentProgress.toString());		
+		currentPrompt = "name";	
+	}
+
+	void HandleExit(){
+		appendOutput("Goodbye");
+	}
+
 	void HandleName(String input){
 		ReadJSONFile();
 		playerName = input;
@@ -191,38 +271,34 @@ class GameServer {
 	}
 	
 	void HandleType(String input){
-		switch (input) {
-			case "ci":
-				appendOutput("Thank you " + playerName + ", I will show you a picture of a city and you have to guess which one it is");
-				currentPrompt = "city";
-				RandomCity();
-				setBlanks(currentProgress.toString());
-				try {
+		try {	
+			switch (input) {
+				case "ci":
+					appendOutput("Thank you " + playerName + ", I will show you a picture of a city and you have to guess which one it is");
+					currentPrompt = "city";
+					RandomCity();
+					setBlanks(currentProgress.toString());
 					insertImage("img/city/" + imageToGuess, 0, 0);
-				} catch (Exception e){
-					System.out.println(e);
-				}		
-				break;
-			case "co":
-				appendOutput("Thank you " + playerName + ", I will show you a picture of a country and you have to guess which one it is");
-				currentPrompt = "country";
-				RandomCountry();
-				setBlanks(currentProgress.toString());
-				try {
+					break;
+				case "co":
+					appendOutput("Thank you " + playerName + ", I will show you a picture of a country and you have to guess which one it is");
+					currentPrompt = "country";
+					RandomCountry();
+					setBlanks(currentProgress.toString());
 					insertImage("img/country/" + imageToGuess, 0, 0);
-				} catch (Exception e){
-					System.out.println(e);
-				}
-				break;
-			case "leader":
-				appendOutput("Thank you " + playerName + ", here is the leaderboard!");
-				appendOutput(leaderBoard.toString());
-				appendOutput("Would you like to play again (y/n)?");
-				currentPrompt = "again";
-				break;
-			default:
-				break;
-		}
+					break;
+				case "leader":
+					appendOutput("Thank you " + playerName + ", here is the leaderboard!");
+					appendOutput(leaderBoard.toString());
+					appendOutput("Would you like to play again (y/n)?");
+					currentPrompt = "again";
+					break;
+				default:
+					break;
+			}
+		} catch (Exception e){
+			System.out.println(e);
+		}		
 	}
 
 	void HandleAgain(String input){
@@ -239,9 +315,8 @@ class GameServer {
 				setPoints(0);
 				break;
 			default:
-				appendOutput("Goodbye 😊");
 				currentPrompt = "exit";
-				System.exit(0);
+				HandleExit();
 				break;
 		}
 	}
@@ -313,7 +388,7 @@ class GameServer {
 	 * @param file the File object that represents the file whose name without extension is to be returned
 	 * @return the name of the file without its extension
 	 */
-	static String getNameWithoutExtension(File file) {
+	String getNameWithoutExtension(File file) {
         String fileName = file.getName();
         int dotIndex = fileName.lastIndexOf('.');
         if (dotIndex == -1) {
@@ -322,4 +397,11 @@ class GameServer {
         return fileName.substring(0, dotIndex);
     }
 
+	JSONObject error(String err) {
+		System.out.println("Error: " + err);
+		JSONObject json = new JSONObject();
+		json.put("type", "error");
+		json.put("error", err);
+		return json;
+	}
 }

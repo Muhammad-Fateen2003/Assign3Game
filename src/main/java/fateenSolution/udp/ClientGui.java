@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.Socket;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
@@ -36,15 +38,20 @@ public class ClientGui implements OutputPanel.EventHandlers {
 	PicturePanel picturePanel;
 	OutputPanel outputPanel;
 	boolean gameStarted = false;
-	String currentMessage;
+	Socket sock;
 	OutputStream out;
 	ObjectOutputStream os;
 	BufferedReader bufferedReader;
-	//GameServer game = new GameServer();  //TODO: remove this
 	ClientUDP gameClient;
+	String prevImage;
 
 	public void connect(String serverName, int port){
 		gameClient = new ClientUDP(serverName, port);
+		try {
+			handleInput("newgame");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -78,9 +85,9 @@ public class ClientGui implements OutputPanel.EventHandlers {
 		frame.add(outputPanel, c);
 
 		picturePanel.newGame(1);
-		insertImage("img/hi.png", 0, 0);
-		outputPanel.appendOutput("Hello, please tell me your name.");
-
+		//insertImage("img/hi.png", 0, 0);
+		//outputPanel.appendOutput("Hello, please tell me your name.");
+		//handleInput("newgame");
 	}
 
 	/**
@@ -121,6 +128,72 @@ public class ClientGui implements OutputPanel.EventHandlers {
 		return false;
 	}
 
+
+	public boolean insertImage(ImageIcon image, int row, int col) throws IOException {
+		System.out.println("Image insert");
+		String error = "";
+		try {
+			// insert the image
+			picturePanel.insertImage(image, row, col);
+			return true;
+		} catch(PicturePanel.InvalidCoordinateException e) {
+			// put error in output
+			error = e.toString();
+		}
+		outputPanel.appendOutput(error);
+		return false;
+	}
+
+	void handleInput(String input) throws IOException{
+		String requestMessage = "{'type': 'processInput', 'value' : '"+input+"'}";
+
+		JSONObject request = new JSONObject(requestMessage);
+		JSONObject response = gameClient.ProcessMessage(request);
+
+		if(response.has("error")) {
+			String errorMsg = response.getString("error");
+			System.out.println(errorMsg);
+			outputPanel.appendOutput(errorMsg);
+		}
+
+		String sAction = response.getString("action");
+		String sImage = response.getString("image");
+		String sBlanks = response.getString("blanks");
+		int sPoints = response.getInt("points");
+		String sOutputs = response.getString("outputs");
+
+		outputPanel.setBlanks(sBlanks);
+		outputPanel.setPoints(sPoints);
+		if(!sOutputs.isEmpty()){
+			outputPanel.appendOutput(sOutputs);
+		}
+
+		if (sAction.equals("exit")) {
+			gameClient.Close();
+			System.exit(0);
+		} 
+
+		if(!sImage.equals(prevImage)){
+			requestMessage = "{'type': 'getImage', 'value' : '"+sImage+"'}";
+			request = new JSONObject(requestMessage);
+			ImageIcon image = gameClient.GetImage(request);
+
+			if(response.has("error")) {
+				String errorMsg = response.getString("error");
+				System.out.println(errorMsg);
+				outputPanel.appendOutput(errorMsg);
+			}	
+
+			try {
+				insertImage(image, 0, 0);
+				//insertImage(sImage, 0, 0);
+			} catch (Exception e){
+				System.out.println(e);
+			}
+			prevImage = sImage;
+		}
+	}
+
 	/**
 	 * Submit button handling
 	 * 
@@ -134,43 +207,18 @@ public class ClientGui implements OutputPanel.EventHandlers {
 	
 		// Pulls the input box text
 		String input = outputPanel.getInputText();
-		currentMessage = "{'type': 'name', 'value' : '"+input+"'}";
-		
-		if (input.equals("quit")) {
-			outputPanel.appendOutput("Exiting app");
-			System.exit(0);
-		} else {
-			outputPanel.appendOutput(input);
-		}
-
-		String requestMessage = "{'type': 'processInput', 'value' : '"+input+"'}";
-		//String requestMessage = "{'type': 'downloadImage', 'value' : '"+sImage+"'}";
-
-		JSONObject request = new JSONObject(requestMessage);
-
-		//JSONObject response = game.ProcessMessage(request);
-		JSONObject response = gameClient.ProcessMessage(request);
-		
-
-		String sImage = response.getString("image");
-		String sBlanks = response.getString("blanks");
-		int sPoints = response.getInt("points");
-		String sOutputs = response.getString("outputs");
-
-		outputPanel.setBlanks(sBlanks);
-		outputPanel.setPoints(sPoints);
-		if(!sOutputs.isEmpty()){
-			outputPanel.appendOutput(sOutputs);
-		}
+		outputPanel.appendOutput(input);
 
 		try {
-			insertImage(sImage, 0, 0);
-		} catch (Exception e){
-			System.out.println(e);
+			handleInput(input);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	
+
 		outputPanel.setInputText("");
 	}
+
 
 	/**
 	 * Key listener for the input text box

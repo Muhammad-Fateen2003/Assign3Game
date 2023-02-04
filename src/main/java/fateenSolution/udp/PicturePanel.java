@@ -3,7 +3,6 @@ package fateenSolution.udp;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -155,6 +154,18 @@ public class PicturePanel extends JPanel {
     return false;
   }
   
+  public boolean insertImage(ImageIcon icon, int row, int col) throws InvalidCoordinateException {
+    // Check or invalid coordinates
+    if (row < 0 || col < 0 || 
+        row >= 0 && labels.length <= row || 
+        labels[row].length <= col) {
+      throw new InvalidCoordinateException(labels.length, labels.length, row, col);
+    }
+    
+    labels[row][col].setIcon(icon);
+    return true;
+  }
+  
   /**
    * Insert an image at position at (col, row)
    * @param fname - filename of image to display
@@ -181,6 +192,4 @@ public class PicturePanel extends JPanel {
       labels[row][col].setIcon(icon);
 
   }
-  
-  
 }

@@ -1,28 +1,14 @@
 package fateenSolution.tcp;
 
 import java.awt.Dimension;
-import java.io.*;
 import org.json.*;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Random;
-
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
@@ -56,7 +42,6 @@ public class ClientGui implements OutputPanel.EventHandlers {
 	OutputStream out;
 	ObjectOutputStream os;
 	BufferedReader bufferedReader;
-	//GameServer game = new GameServer();  //TODO: remove this
 	ClientTCP gameClient;
 	String prevImage;
 
@@ -65,7 +50,6 @@ public class ClientGui implements OutputPanel.EventHandlers {
 		try {
 			handleInput("newgame");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
