@@ -12,6 +12,11 @@ For more details see code and/or the assignment video
 
 # TCP
 
+## Video
+
+https://user-images.githubusercontent.com/109046423/216748326-7a342dbf-ccb9-4809-a5db-cddd25fe6e9d.mp4
+
+
 ## Requirements
 
 - [X] (3 points) When the user starts up it should connect to the server. The server will
